@@ -1,0 +1,5 @@
+DATESTAMP.gd
+*.exe
+*.x86
+*.x86_64
+*.elf

@@ -1,0 +1,15 @@
+[gd_scene format=2]
+
+[node name="app_root" type="Node2D"]
+
+[node name="main_menu" type="Node2D" parent="."]
+
+[node name="options" type="Node2D" parent="."]
+
+[node name="credits" type="Node2D" parent="."]
+
+[node name="gameplay" type="Node2D" parent="."]
+
+[node name="splash" type="Node2D" parent="."]
+
+[node name="screenwipe" type="Node2D" parent="."]
