@@ -6,6 +6,8 @@ script/source = "extends Label
 #------------------------------------------------------------------------------
 
 func _ready():
+	self.margin_right  = OS.get_window_safe_area().size.x - 8;
+	self.margin_bottom = OS.get_window_safe_area().size.y - 8;
 	self.text = \"commit: \" + DATESTAMP.BUILD_HASH + \"\\nexported: \" + DATESTAMP.BUILD_DATE + \"\\nGodot version: \" + Engine.get_version_info()[\"string\"];
 	return;
 "
@@ -26,8 +28,10 @@ func _ready():
 
 [node name="LBL_versioninfo" type="Label" parent="."]
 modulate = Color( 0.545098, 1, 0, 1 )
-margin_left = 766.0
-margin_top = 504.0
-margin_right = 1014.0
-margin_bottom = 592.0
+margin_left = 1018.0
+margin_top = 615.0
+margin_right = 1266.0
+margin_bottom = 703.0
+align = 2
+valign = 2
 script = SubResource( 1 )

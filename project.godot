@@ -19,6 +19,15 @@ config/icon="res://icon.png"
 DATESTAMP="*res://DATESTAMP.gd"
 GLOBAL="*res://GLOBAL.gd"
 
+[debug]
+
+settings/fps/force_fps=60
+
+[display]
+
+window/size/width=1280
+window/size/height=720
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
