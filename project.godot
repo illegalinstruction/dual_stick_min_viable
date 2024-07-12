@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 DATESTAMP="*res://DATESTAMP.gd"
+GLOBAL="*res://GLOBAL.gd"
 
 [gui]
 
