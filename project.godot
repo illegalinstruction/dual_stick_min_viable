@@ -11,7 +11,12 @@ config_version=4
 [application]
 
 config/name="Dual-Stick Roguelike MVP"
+run/main_scene="res://scenes/app_root.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+DATESTAMP="*res://DATESTAMP.gd"
 
 [gui]
 
