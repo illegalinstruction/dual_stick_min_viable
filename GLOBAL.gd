@@ -55,7 +55,7 @@ func poll_joysticks():
 			self.JOY_STATES[joy_index]["portal_button"] = IDLE;
 			
 		# "spell scroll" key
-		if (Input.is_joy_button_pressed(joy_index, JOY_L) or Input.is_joy_button_pressed(joy_index, JOY_R)):
+		if (Input.is_joy_button_pressed(joy_index, JOY_XBOX_X)):
 			if (self.JOY_STATES[joy_index]["evade_button"] == IDLE):
 				self.JOY_STATES[joy_index]["evade_button"] = JUST_PRESSED;
 			else:

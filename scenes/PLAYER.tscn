@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://placeholder_assets/new_dynamicfont.tres" type="DynamicFont" id=1]
 
@@ -39,7 +39,7 @@ extends KinematicBody;
 # to tune difficulty, adjust these values
 const STARTING_MAX_HP          : int   = 4;
 const STARTING_MAX_MP          : int   = 7;
-const RUN_SPEED                : float = 0.25; # in meters per frame
+const RUN_SPEED                : float = 0.18; # in meters per frame
 const MANA_REGEN_PER_FRAME     : float = 0.005;
 const JUGGLE_PROTECTION_LENGTH : int   = 8;
 const ANALOGUE_RUN_DIST        : float = 0.75;
@@ -58,6 +58,7 @@ var MAX_HP                   : int   = STARTING_MAX_HP;
 var MAX_MP                   : float = STARTING_MAX_MP;
 var CURRENT_HP               : int   = STARTING_MAX_HP;
 var CURRENT_MP               : float = STARTING_MAX_MP;
+var previous_angle           : float = 0.0;
 
 #-------------------------------------------------------------------------------
 
@@ -75,6 +76,12 @@ func _process(delta):
 	var l_dist_tmp  : float = GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].length();
 	var r_dist_tmp  : float = GLOBAL.JOY_STATES[PLAYER_NUM][\"right_stick\"].length();
 	
+	# dodge-roll button takes precedence over 
+	# everything else, so listen
+	# for it first
+	if (GLOBAL.JOY_STATES[PLAYER_NUM][\"evade_button\"] == GLOBAL.JUST_PRESSED):
+		$visuals.notify_dodge_roll();
+	
 	# are we in a dodge roll?
 	if not ($visuals.is_rolling):
 		# for calculating run/walk movement
@@ -84,6 +91,7 @@ func _process(delta):
 		# we've been told to move
 		if (l_dist_tmp > GLOBAL.ANALOGUE_DEAD_ZONE):
 			$visuals.rotation.y = l_angle_tmp;
+			previous_angle      = l_angle_tmp;
 			
 			# are we walking or running?
 			if (l_dist_tmp >= ANALOGUE_RUN_DIST):
@@ -102,7 +110,15 @@ func _process(delta):
 			move_and_collide(displacement_tmp);
 		else:
 			$visuals.notify_idle();
-			
+	else:
+		# we are in the middle of a dodge roll
+		var displacement_tmp : Vector3 = Vector3.ZERO;
+		displacement_tmp.x = RUN_SPEED * -sin(previous_angle) * 1.4; 
+		displacement_tmp.z = RUN_SPEED * -cos(previous_angle) * 1.4; 
+
+		# compute movement
+		move_and_collide(displacement_tmp);
+
 		
 	if (r_dist_tmp > GLOBAL.ANALOGUE_DEAD_ZONE):
 		$DEBUG_shoot_direction_indicator.rotation.y = r_angle_tmp;
@@ -118,6 +134,8 @@ radius = 0.5
 radial_segments = 16
 rings = 6
 
+[sub_resource type="SpatialMaterial" id=9]
+
 [sub_resource type="GDScript" id=7]
 script/source = "###-----------------------------------------------------------------------------
 ### ONLY visual representation happens here. no game logic.
@@ -130,7 +148,7 @@ extends MeshInstance
 #-------------------------------------------------------------------------------
 
 export var HURT_RED_FLASH_NUM_FRAMES : int = 60;
-export var DODGE_ROLL_NUM_FRAMES     : int = 90;
+export var DODGE_ROLL_NUM_FRAMES     : int = 25;
 export var SPELLCASTING_NUM_FRAMES   : int = 20;
 
 #-------------------------------------------------------------------------------
@@ -175,6 +193,7 @@ func notify_dodge_roll():
 	if not (is_rolling):
 		anim_state = DODGE_ROLL;
 		anim_clock = DODGE_ROLL_NUM_FRAMES;
+		is_rolling = true;
 
 #-------------------------------------------------------------------------------
 
@@ -287,6 +306,7 @@ shape = SubResource( 1 )
 [node name="visuals" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0 )
 mesh = SubResource( 2 )
+material/0 = SubResource( 9 )
 script = SubResource( 7 )
 
 [node name="DEBUG_run_direction" type="MeshInstance" parent="visuals"]
