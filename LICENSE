@@ -25,18 +25,19 @@ SOFTWARE.
 Licenses of components this skeleton incorporates follow:
 #----------------------------------------------------------------------------
 Placeholder typeface courtesy of VileR, made available under CC-BY-SA 4.0.
-details: https://int10h.org/oldschool-pc-fonts/readme/#legal_stuff
+For details: https://int10h.org/oldschool-pc-fonts/readme/#legal_stuff and
+https://creativecommons.org/licenses/by-sa/4.0/deed.en .
 
 #----------------------------------------------------------------------------
 Godot Game Engine:
 
-Uses Godot 3.6; for license details, please see godotengine.org/license
+Uses Godot 3.6; for license details, please see https://godotengine.org/license
 
 #----------------------------------------------------------------------------
 FreeType:
 
 Portions of this software are copyright © 2024 The FreeType Project 
-(www.freetype.org). All rights reserved.
+(https://www.freetype.org). All rights reserved.
 
 #----------------------------------------------------------------------------
 ENet:
@@ -61,6 +62,8 @@ Software is furnished to do so, subject to the following conditions:
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
+For details: https://github.com/lsalzman/enet
+
 #----------------------------------------------------------------------------
 mbed TLS:
 
@@ -78,4 +81,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and 
 limitations under the License.
 
+For details: https://github.com/Mbed-TLS/mbedtls
 
