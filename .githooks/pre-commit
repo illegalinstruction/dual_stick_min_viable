@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "extends Node;" > DATESTAMP.gd
+echo "" >> DATESTAMP.gd
+echo "###--------------------------------------------------------------------" >> DATESTAMP.gd
+echo "### auto-generated - do not edit by hand                          -----" >> DATESTAMP.gd
+echo "" >> DATESTAMP.gd
+echo "const BUILD_DATE = \"`date --iso-8601=seconds -u`\";" >> DATESTAMP.gd
+echo "const BUILD_HASH = \"`git rev-parse HEAD | cut -c 1-12`\";" >> DATESTAMP.gd
+
+
