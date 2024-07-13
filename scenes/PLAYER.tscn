@@ -1,4 +1,103 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://placeholder_assets/new_dynamicfont.tres" type="DynamicFont" id=1]
+
+[sub_resource type="GDScript" id=8]
+script/source = "### assumptions: 
+### -	player does NOT have any inertia and behaves as if floors have
+### 	infinite friction (to make precision positioning easier in bullet hell fights)
+###
+### -	GLOBAL.poll_joysticks() has already been called and the input for the previous
+###		frame exists
+###
+### -	Once fired, bullets manage themselves until they hit a wall or an enemy, and
+###		the player object can forget about them
+###
+### -   There are no slopes, and everything interesting happens in the XZ plane
+###
+### -   All enemy hits deal exactly 1 point of damage
+###
+### -   Immediately after being hit and while rolling, the player can't be hit
+###
+### -   Player's mana slowly regenerates over time.  it's a float to aid this.
+###		Even though it's a float, we only check the integer portion when deciding
+###		whether they can cast or not.
+###		
+###	-	Walk speed is (RUN_SPEED * 0.55).
+### 
+### -	Dodge roll speed is (RUN_SPEED * 1.8).
+###
+### - 	The previous two values may need tuning to make the game fair/hard/fun
+################################################################################
+### known bugs:
+### -	everything is hard-coded to player 1 right now.
+###
+
+extends KinematicBody;
+
+#-------------------------------------------------------------------------------
+# to tune difficulty, adjust these values
+const STARTING_MAX_HP          : int   = 4;
+const STARTING_MAX_MP          : int   = 7;
+const RUN_SPEED                : float = 1.1;
+const MANA_REGEN_PER_FRAME     : float = 0.005;
+const JUGGLE_PROTECTION_LENGTH : int   = 8;
+const ANALOGUE_RUN_DIST        : float = 0.75;
+
+#-------------------------------------------------------------------------------
+# which player am I (and which joypad should I be listening to)?
+var PLAYER_NUM : int = 0; # (fixme)
+
+#-------------------------------------------------------------------------------
+# planned but not yet implemented 
+# -	player can buy 1 point increases in max hp, max mp, or
+#	chance for enemies to miss by exchanging experience coins
+
+var CHANCE_FOR_ENEMY_TO_MISS : int   = 0;
+var MAX_HP                   : int   = STARTING_MAX_HP;
+var MAX_MP                   : float = STARTING_MAX_MP;
+var CURRENT_HP               : int   = STARTING_MAX_HP;
+var CURRENT_MP               : float = STARTING_MAX_MP;
+
+#-------------------------------------------------------------------------------
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	CURRENT_HP = MAX_HP;
+	CURRENT_MP = MAX_MP;
+	return;
+
+#-------------------------------------------------------------------------------
+
+func _process(delta):
+	var l_angle_tmp : float = ((3.0 * PI) / 2.0) - GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].angle();
+	var r_angle_tmp : float = ((3.0 * PI) / 2.0) - GLOBAL.JOY_STATES[PLAYER_NUM][\"right_stick\"].angle();
+	var l_dist_tmp  : float = GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].length();
+	var r_dist_tmp  : float = GLOBAL.JOY_STATES[PLAYER_NUM][\"right_stick\"].length();
+	
+	# are we in a dodge roll?
+	if not ($visuals.is_rolling):
+		# no - can move normally	
+		# we've been told to move
+		if (l_dist_tmp > GLOBAL.ANALOGUE_DEAD_ZONE):
+			$visuals.rotation.y = l_angle_tmp;
+			
+			# are we walking or running?
+			if (l_dist_tmp >= ANALOGUE_RUN_DIST):
+				# running
+				$visuals.notify_running();
+			else:
+				# walking
+				$visuals.notify_walking();
+		else:
+			$visuals.notify_idle();
+			
+		
+	if (r_dist_tmp > GLOBAL.ANALOGUE_DEAD_ZONE):
+		$DEBUG_shoot_direction_indicator.rotation.y = r_angle_tmp;
+		
+	return;
+"
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 0.5
@@ -147,6 +246,9 @@ func _process(_ignored):
 	# walking & running would be handled by a model's AnimationPlayer
 	# automagically, and thus don't need to interact with the animation clock	
 	
+	# debug - show what state we're in
+	$DEBUG_ANIM_STATE.text = \"anim_state = \" + str(anim_state) + \"\\n\" + \"anim_clock = \" + str(anim_clock);
+	
 	return;
 "
 
@@ -165,6 +267,7 @@ size = Vector3( 1, 1, 0.25 )
 albedo_color = Color( 0.952941, 0.513726, 0.968627, 1 )
 
 [node name="PLAYER" type="KinematicBody"]
+script = SubResource( 8 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0 )
@@ -182,11 +285,21 @@ mesh = SubResource( 4 )
 [node name="SPELLCASTING_PLACEHOLDER" type="Label3D" parent="visuals"]
 transform = Transform( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, -1.5 )
 visible = false
+cast_shadow = 0
 pixel_size = 0.025
 billboard = 1
 alpha_cut = 1
 alpha_scissor_threshold = 0.4
 text = "casting spell..."
+
+[node name="DEBUG_ANIM_STATE" type="Label3D" parent="visuals"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.206701, -1.22678 )
+cast_shadow = 0
+billboard = 1
+alpha_cut = 1
+modulate = Color( 0.564706, 1, 0.294118, 1 )
+text = "anim_state"
+font = ExtResource( 1 )
 
 [node name="DEBUG_shoot_direction_indicator" type="Spatial" parent="."]
 

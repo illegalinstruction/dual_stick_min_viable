@@ -31,6 +31,7 @@ window/size/height=720
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+theme/custom_font="res://placeholder_assets/new_dynamicfont.tres"
 
 [physics]
 
