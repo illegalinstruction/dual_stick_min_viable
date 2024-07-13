@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 0.5
@@ -7,6 +7,148 @@ radius = 0.5
 radius = 0.5
 radial_segments = 16
 rings = 6
+
+[sub_resource type="GDScript" id=7]
+script/source = "###-----------------------------------------------------------------------------
+### ONLY visual representation happens here. no game logic.
+### built with the assumptions that the player may not cancel out of a
+### dodge roll, may not spellcast whilst being hit or rolling, may be 
+### hit out of spellcasting, and spellcasting can be canceled by moving
+
+extends MeshInstance
+
+#-------------------------------------------------------------------------------
+
+export var HURT_RED_FLASH_NUM_FRAMES : int = 60;
+export var DODGE_ROLL_NUM_FRAMES     : int = 90;
+export var SPELLCASTING_NUM_FRAMES   : int = 20;
+
+#-------------------------------------------------------------------------------
+
+const IDLE       : int = 0;   # these would
+const WALKING    : int = 1;   # ideally map to
+const RUNNING    : int = 2;   # animations 
+const DODGE_ROLL : int = 3;   # in a GLTF
+const SPELLCAST  : int = 4;
+const HURT       : int = 5;
+const DYING      : int = 6;
+
+#-------------------------------------------------------------------------------
+
+var anim_clock      : int  = 0;
+var hurt_clock      : int  = 0;
+var anim_state      : int  = IDLE;
+var is_hurting      : bool = false;   # for communicating with parent 
+var is_rolling      : bool = false;   # for communicating with parent
+var is_spellcasting : bool = false;   # for communicating with parent
+
+#-------------------------------------------------------------------------------
+
+func _ready():
+	anim_clock        = 0;
+	hurt_clock        = 0;
+	is_hurting        = false;
+	is_rolling        = false;
+	is_spellcasting   = false;
+	anim_state        = IDLE;
+	$SPELLCASTING_PLACEHOLDER.hide();
+
+#-------------------------------------------------------------------------------
+
+func notify_hurt():
+	hurt_clock = HURT_RED_FLASH_NUM_FRAMES;
+	is_hurting = true;
+
+#-------------------------------------------------------------------------------
+
+func notify_dodge_roll():
+	if not (is_rolling):
+		anim_state = DODGE_ROLL;
+		anim_clock = DODGE_ROLL_NUM_FRAMES;
+
+#-------------------------------------------------------------------------------
+
+func notify_spellcasting():
+	# is a spellcast permitted right now?
+	if not (is_rolling or is_hurting or is_spellcasting):
+		is_spellcasting = true;
+		anim_state      = SPELLCAST;
+		anim_clock      = SPELLCASTING_NUM_FRAMES;
+		$SPELLCASTING_PLACEHOLDER.show();
+
+#-------------------------------------------------------------------------------
+
+func notify_idle():
+	if not (is_rolling):
+		anim_state = IDLE;
+	return;
+
+#-------------------------------------------------------------------------------
+
+func notify_walking():
+	if not (is_rolling):
+		anim_state = WALKING;
+	return;
+	
+#-------------------------------------------------------------------------------
+
+func notify_running():
+	if not (is_rolling):
+		anim_state = RUNNING;
+	return;
+	
+#-------------------------------------------------------------------------------
+
+func _process(_ignored):
+	# TO FUTURE USERS: this is where you'll need to make the  
+	# most changes depending on your character model
+	
+	#--------------------------
+	# make the player flash red from being hurt
+	if (hurt_clock > 0):
+		hurt_clock -= 1;
+		
+		# reduce the g & b channels by this amount on the player's material
+		# known gotcha: assumes the albedo colour is 1,1,1 to start with
+		var amount_to_subtract : float = float(hurt_clock) / float(HURT_RED_FLASH_NUM_FRAMES);
+		var matl_tmp = get_active_material(0) as SpatialMaterial;
+		matl_tmp.albedo_color.g = 1.0 - amount_to_subtract;
+		matl_tmp.albedo_color.b = 1.0 - amount_to_subtract;
+		
+		# last iteration in loop?
+		if (hurt_clock == 0):
+			is_hurting = false;
+			
+	#--------------------------
+	# handle dodge-roll/evade
+	if (anim_state == DODGE_ROLL):
+		anim_clock -= 1;
+		
+		# rolling happens in the direction of travel (along my local +z), so rotate across x
+		self.rotate_x(1.0 / float(DODGE_ROLL_NUM_FRAMES) * TAU);
+		
+		# roll manoeuvre completed?
+		if (anim_clock == 0):
+			is_rolling = false;
+			anim_state = IDLE;
+	
+	#--------------------------
+	# handle spellcasting
+	if (anim_state == SPELLCAST):
+		anim_clock -= 1;
+		$SPELLCASTING_PLACEHOLDER.text = \"casting spell... \" + str(anim_clock);
+		
+		if (anim_clock == 0):
+			anim_state      = IDLE;
+			is_spellcasting = false;
+			$SPELLCASTING_PLACEHOLDER.hide();
+		
+	#--------------------------
+	# walking & running would be handled by a model's AnimationPlayer
+	# automagically, and thus don't need to interact with the animation clock	
+	
+	return;
+"
 
 [sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.341176, 0.843137, 0.368627, 1 )
@@ -31,14 +173,24 @@ shape = SubResource( 1 )
 [node name="visuals" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0 )
 mesh = SubResource( 2 )
+script = SubResource( 7 )
 
-[node name="MeshInstance" type="MeshInstance" parent="visuals"]
+[node name="DEBUG_run_direction" type="MeshInstance" parent="visuals"]
 transform = Transform( -1, -8.74228e-08, 3.82137e-15, 8.74228e-08, -1, 8.74228e-08, -3.82137e-15, 8.74228e-08, 1, 0, -0.466645, 0.441007 )
 mesh = SubResource( 4 )
 
+[node name="SPELLCASTING_PLACEHOLDER" type="Label3D" parent="visuals"]
+transform = Transform( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, -1.5 )
+visible = false
+pixel_size = 0.025
+billboard = 1
+alpha_cut = 1
+alpha_scissor_threshold = 0.4
+text = "casting spell..."
+
 [node name="DEBUG_shoot_direction_indicator" type="Spatial" parent="."]
 
-[node name="triangle thing" type="MeshInstance" parent="DEBUG_shoot_direction_indicator"]
+[node name="mesh" type="MeshInstance" parent="DEBUG_shoot_direction_indicator"]
 transform = Transform( -1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0, 1.07613, -0.466645 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../../visuals")
