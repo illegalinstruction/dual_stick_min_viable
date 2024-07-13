@@ -39,7 +39,7 @@ extends KinematicBody;
 # to tune difficulty, adjust these values
 const STARTING_MAX_HP          : int   = 4;
 const STARTING_MAX_MP          : int   = 7;
-const RUN_SPEED                : float = 1.1;
+const RUN_SPEED                : float = 0.25; # in meters per frame
 const MANA_REGEN_PER_FRAME     : float = 0.005;
 const JUGGLE_PROTECTION_LENGTH : int   = 8;
 const ANALOGUE_RUN_DIST        : float = 0.75;
@@ -77,6 +77,9 @@ func _process(delta):
 	
 	# are we in a dodge roll?
 	if not ($visuals.is_rolling):
+		# for calculating run/walk movement
+		var displacement_tmp : Vector3 = Vector3.ZERO;
+		
 		# no - can move normally	
 		# we've been told to move
 		if (l_dist_tmp > GLOBAL.ANALOGUE_DEAD_ZONE):
@@ -86,9 +89,17 @@ func _process(delta):
 			if (l_dist_tmp >= ANALOGUE_RUN_DIST):
 				# running
 				$visuals.notify_running();
+				displacement_tmp.x = RUN_SPEED * GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].x;
+				displacement_tmp.z = RUN_SPEED * GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].y;
+				
 			else:
 				# walking
 				$visuals.notify_walking();
+				displacement_tmp.x = RUN_SPEED * 0.55 * GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].x;
+				displacement_tmp.z = RUN_SPEED * 0.55 * GLOBAL.JOY_STATES[PLAYER_NUM][\"left_stick\"].y;
+				
+			# compute movement
+			move_and_collide(displacement_tmp);
 		else:
 			$visuals.notify_idle();
 			
@@ -295,8 +306,9 @@ text = "casting spell..."
 [node name="DEBUG_ANIM_STATE" type="Label3D" parent="visuals"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.206701, -1.22678 )
 cast_shadow = 0
+pixel_size = 0.002
 billboard = 1
-alpha_cut = 1
+fixed_size = true
 modulate = Color( 0.564706, 1, 0.294118, 1 )
 text = "anim_state"
 font = ExtResource( 1 )
