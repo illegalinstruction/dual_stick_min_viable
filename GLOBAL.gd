@@ -9,6 +9,7 @@ const HELD         : int = 2;
 #-------------------------------------------------------------------------------
 
 export var ANALOGUE_DEAD_ZONE : float = 0.2;
+export var screenwipe_active  : bool = false; 
 
 #-------------------------------------------------------------------------------
 # joypad vars

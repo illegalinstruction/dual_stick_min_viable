@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/gameplay.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/screenwipe.tscn" type="PackedScene" id=2]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Label
@@ -8,8 +9,8 @@ script/source = "extends Label
 #------------------------------------------------------------------------------
 
 func _ready():
-	self.margin_right  = OS.get_window_safe_area().size.x - 8;
-	self.margin_bottom = OS.get_window_safe_area().size.y - 8;
+	self.rect_position.x  = OS.get_window_safe_area().size.x - self.rect_size.x - 8;
+	self.rect_position.y  = OS.get_window_safe_area().size.y - self.rect_size.y - 8;
 	self.text = \"commit: \" + DATESTAMP.BUILD_HASH + \"\\nexported: \" + DATESTAMP.BUILD_DATE + \"\\nGodot version: \" + Engine.get_version_info()[\"string\"];
 	return;
 "
@@ -25,6 +26,7 @@ script/source = "extends Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
 	pass # Replace with function body.
 
 
@@ -59,15 +61,16 @@ visible = false
 [node name="splash" type="Node2D" parent="."]
 visible = false
 
-[node name="screenwipe" type="Node2D" parent="."]
-visible = false
+[node name="screenwipe" parent="." instance=ExtResource( 2 )]
 
 [node name="LBL_versioninfo" type="Label" parent="."]
 modulate = Color( 0.545098, 1, 0, 1 )
 margin_left = 1018.0
 margin_top = 615.0
-margin_right = 1266.0
-margin_bottom = 703.0
+margin_right = 1274.0
+margin_bottom = 711.0
+grow_horizontal = 0
+grow_vertical = 0
 align = 2
 valign = 2
 script = SubResource( 1 )

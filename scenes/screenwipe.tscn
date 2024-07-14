@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/screenwipe/MATL_screenwipe.tres" type="Material" id=3]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+#-------------------------------------------------------------------------------
+
+const SCREENWIPE_LENGTH : int = 100;
+
+#-------------------------------------------------------------------------------
+
+var  anim_clock : int;
+var  direction  : int;
+
+#-------------------------------------------------------------------------------
+
+func _ready():
+	hide();
+	return;
+
+#-------------------------------------------------------------------------------
+
+func start_wipe(in_or_out : bool):
+	GLOBAL.screenwipe_active = true;
+	anim_clock = 0;
+	direction  = in_or_out;
+	show();
+	return;
+
+#-------------------------------------------------------------------------------
+
+func _process(_ignore):
+	if (anim_clock >= SCREENWIPE_LENGTH):
+		return;
+
+	anim_clock += 1;
+	
+	var shadermatl    = $Effect.get(\"material\") as ShaderMaterial;
+	var half : float  = (SCREENWIPE_LENGTH / 2.0);
+
+	if (direction):
+		# in
+		if (anim_clock < half):
+			shadermatl.set_shader_param(\"top\",  anim_clock/half);
+			shadermatl.set_shader_param(\"bottom\", 0.0);
+		else:
+			shadermatl.set_shader_param(\"top\",  1.0);
+			shadermatl.set_shader_param(\"bottom\", (anim_clock - half)/half);
+			
+		if (anim_clock == SCREENWIPE_LENGTH):
+			GLOBAL.screenwipe_active = false;
+			hide();
+	else:
+		#out
+		var anim_clock_reversed = SCREENWIPE_LENGTH - anim_clock;
+		if (anim_clock > half):
+			shadermatl.set_shader_param(\"top\",  anim_clock_reversed/half);
+			shadermatl.set_shader_param(\"bottom\", 0.0);
+		else:
+			shadermatl.set_shader_param(\"top\",  1.0);
+			shadermatl.set_shader_param(\"bottom\", (anim_clock_reversed - half)/half);
+
+"
+
+[node name="SCREENWIPE" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="Effect" type="ColorRect" parent="."]
+material = ExtResource( 3 )
+margin_right = 1280.0
+margin_bottom = 720.0

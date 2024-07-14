@@ -17,10 +17,15 @@ func _ready():
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (Input.is_key_pressed(KEY_O)):
 		$NSEW.notify_open_gate();
+	if (Input.is_key_pressed(KEY_SPACE)):
+		$\"../screenwipe\".start_wipe(false);
+	if (Input.is_key_pressed(KEY_M)):
+		$\"../screenwipe\".start_wipe(true);
+	if (Input.is_key_pressed(KEY_ESCAPE)):
+		get_tree().quit();
 	pass
 "
 
