@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://placeholder_assets/MATL_floor.tres" type="Material" id=1]
 [ext_resource path="res://placeholder_assets/MATL_wall.tres" type="Material" id=2]
@@ -59,6 +59,9 @@ extents = Vector3( 16, 1, 16 )
 
 [sub_resource type="BoxShape" id=8]
 extents = Vector3( 1, 1, 4 )
+
+[sub_resource type="BoxShape" id=10]
+extents = Vector3( 1, 1, 2 )
 
 [node name="NSEW" type="Spatial"]
 script = SubResource( 9 )
@@ -275,3 +278,42 @@ transform = Transform( 0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.70710
 light_color = Color( 0.945098, 0.815686, 0.65098, 1 )
 shadow_enabled = true
 shadow_bias = -0.1
+
+[node name="EXIT_EAST" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_EAST"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="EXIT_NORTH" type="Area" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_NORTH"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="EXIT_WEST" type="Area" parent="."]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_WEST"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="EXIT_SOUTH" type="Area" parent="."]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_SOUTH"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="SPAWN_NORTH" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.01, -7 )
+
+[node name="SPAWN_EAST" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 7, 0.01, 0 )
+
+[node name="SPAWN_SOUTH" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.01, 7 )
+
+[node name="SPAWN_WEST" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 0.01, 0 )
