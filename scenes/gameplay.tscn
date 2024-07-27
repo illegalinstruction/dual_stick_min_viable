@@ -1,7 +1,16 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/PLAYER.tscn" type="PackedScene" id=1]
 [ext_resource path="res://room_chunklets/NSEW.tscn" type="PackedScene" id=2]
+[ext_resource path="res://room_chunklets/__E_.tscn" type="PackedScene" id=3]
+[ext_resource path="res://room_chunklets/NS__.tscn" type="PackedScene" id=4]
+[ext_resource path="res://room_chunklets/N_E_.tscn" type="PackedScene" id=5]
+[ext_resource path="res://room_chunklets/_S_W.tscn" type="PackedScene" id=6]
+[ext_resource path="res://room_chunklets/NSE_.tscn" type="PackedScene" id=7]
+[ext_resource path="res://room_chunklets/N__W.tscn" type="PackedScene" id=8]
+[ext_resource path="res://room_chunklets/__EW.tscn" type="PackedScene" id=9]
+[ext_resource path="res://room_chunklets/_S__.tscn" type="PackedScene" id=10]
+[ext_resource path="res://room_chunklets/NS_W.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Node2D
@@ -77,3 +86,30 @@ transform = Transform( 1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
+
+[node name="NS__" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18 )
+
+[node name="_S__" parent="." instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -36 )
+
+[node name="NSEW2" parent="." instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0 )
+
+[node name="NSE_" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 0 )
+
+[node name="NS_W" parent="." instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -18 )
+
+[node name="NSE_2" parent="." instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -36 )
+
+[node name="_S_W" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -54 )
+
+[node name="__EW" parent="." instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 0, -18 )
+
+[node name="__EW2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -54, 0, -18 )
