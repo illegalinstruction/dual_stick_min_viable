@@ -72,7 +72,7 @@ extents = Vector3( 1, 1, 11 )
 [sub_resource type="BoxShape" id=10]
 extents = Vector3( 1, 1, 2 )
 
-[node name="NSEW" type="Spatial"]
+[node name="N__W" type="Spatial"]
 script = SubResource( 9 )
 
 [node name="GATE_PARENT" type="Spatial" parent="."]
@@ -248,11 +248,10 @@ shape = SubResource( 13 )
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -10, 0, -12 )
 shape = SubResource( 13 )
 
-[node name="OmniLight" type="DirectionalLight" parent="."]
-transform = Transform( 0.707107, -0.353553, 0.612373, 0.183013, 0.928023, 0.324469, -0.683013, -0.117362, 0.720916, 4, 3, 5 )
+[node name="OmniLight" type="OmniLight" parent="."]
+transform = Transform( 0.707107, -0.353553, 0.612373, 0.183013, 0.928023, 0.324469, -0.683013, -0.117362, 0.720916, 0, 3, 2 )
 light_color = Color( 0.0470588, 0.419608, 0.568627, 1 )
 shadow_enabled = true
-shadow_bias = -0.1
 
 [node name="EXIT_NORTH" type="Area" parent="."]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
