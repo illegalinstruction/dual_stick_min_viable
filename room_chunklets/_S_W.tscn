@@ -1,0 +1,271 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://placeholder_assets/MATL_floor.tres" type="Material" id=1]
+[ext_resource path="res://placeholder_assets/MATL_wall.tres" type="Material" id=2]
+[ext_resource path="res://placeholder_assets/gate-diffuse.png" type="Texture" id=3]
+[ext_resource path="res://placeholder_assets/gate-normal.png" type="Texture" id=4]
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends Spatial
+
+var should_open_gate : bool = false;
+
+#-------------------------------------------------------------------------------
+
+func _ready():
+	should_open_gate = false;
+	$GATE_PARENT.position.y = 0;
+
+#-------------------------------------------------------------------------------
+
+func notify_open_gate():
+	should_open_gate = true;
+
+#-------------------------------------------------------------------------------
+
+func _process(delta):
+	# gate sliding anim
+	if (should_open_gate):
+		$GATE_PARENT.position.y -= 0.02;
+"
+
+[sub_resource type="QuadMesh" id=4]
+size = Vector2( 2, 2 )
+
+[sub_resource type="SpatialMaterial" id=5]
+params_cull_mode = 2
+params_use_alpha_scissor = true
+params_alpha_scissor_threshold = 0.2
+albedo_texture = ExtResource( 3 )
+roughness = 0.6
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 4 )
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 1, 1.44188, 2 )
+
+[sub_resource type="PlaneMesh" id=1]
+size = Vector2( 18, 18 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 1, 2, 6 )
+
+[sub_resource type="CubeMesh" id=11]
+size = Vector3( 1, 2, 16 )
+
+[sub_resource type="CubeMesh" id=12]
+size = Vector3( 1, 2, 11 )
+
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 1, 2, 1 )
+
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 16, 1, 16 )
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 1, 1, 4 )
+
+[sub_resource type="BoxShape" id=13]
+extents = Vector3( 1, 1, 11 )
+
+[sub_resource type="BoxShape" id=10]
+extents = Vector3( 1, 1, 2 )
+
+[node name="_S_W" type="Spatial"]
+script = SubResource( 9 )
+
+[node name="GATE_PARENT" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="GATE_PARENT"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 1, 1 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="GATE_PARENT"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 1, -1 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="MeshInstance7" type="MeshInstance" parent="GATE_PARENT"]
+transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -1, 1, -9 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="MeshInstance8" type="MeshInstance" parent="GATE_PARENT"]
+transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 1, 1, -9 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="GATE_PARENT"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="GATE_PARENT/StaticBody"]
+shape = SubResource( 6 )
+
+[node name="StaticBody3" type="StaticBody" parent="GATE_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 3.93403e-07, 0, -9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="GATE_PARENT/StaticBody3"]
+shape = SubResource( 6 )
+
+[node name="WALL_PARENT" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 1 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 1 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 1, 5 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance3" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 1, -5 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance4" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 1, 0 )
+mesh = SubResource( 11 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance6" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, 1, -8.5 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance7" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, 1, -8.5 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance10" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -3.5, 1, 8.5 )
+mesh = SubResource( 12 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance11" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 8.5, 1, 8.5 )
+mesh = SubResource( 3 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance12" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 8.5, 1, -8.5 )
+mesh = SubResource( 3 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance13" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8.5, 1, -8.5 )
+mesh = SubResource( 3 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="MeshInstance9" type="MeshInstance" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, 1, 8.5 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="StaticBody" type="StaticBody" parent="WALL_PARENT"]
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+shape = SubResource( 7 )
+
+[node name="StaticBody2" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody3" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3, 0, 9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody4" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -3, 0, -9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody5" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -9, 0, -3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody6" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3, 0, -9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody6"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody7" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 9, 0, -3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody7"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody8" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -9, 0, 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody8"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+shape = SubResource( 8 )
+
+[node name="StaticBody9" type="StaticBody" parent="WALL_PARENT"]
+transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -3, 0, 9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="WALL_PARENT/StaticBody9"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2 )
+shape = SubResource( 13 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="WALL_PARENT/StaticBody9"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -10, 0, -12 )
+shape = SubResource( 13 )
+
+[node name="OmniLight" type="OmniLight" parent="."]
+transform = Transform( 0.707107, -0.353553, 0.612373, 0.183013, 0.928023, 0.324469, -0.683013, -0.117362, 0.720916, -1, 3, 0 )
+light_color = Color( 0.141176, 0.807843, 0.0862745, 1 )
+shadow_enabled = true
+
+[node name="EXIT_SOUTH" type="Area" parent="."]
+transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_SOUTH"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="EXIT_WEST" type="Area" parent="."]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="EXIT_WEST"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0 )
+shape = SubResource( 10 )
+
+[node name="SPAWN_NORTH" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.01, -7 )
+
+[node name="SPAWN_WEST" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 0.01, 0 )
